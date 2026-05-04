@@ -1,54 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>HYDRA-CORE DASHBOARD v2.0</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-    <style>
-        body { background: #000; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; padding: 20px; }
-        .terminal { border: 2px solid #00ff41; padding: 20px; box-shadow: 0 0 15px #00ff41; width: 100%; max-width: 500px; }
-        h1 { font-size: 1.1rem; text-shadow: 0 0 10px #00ff41; text-align: center; }
-        .btn-green { background: #00ff41; color: #000; border: none; padding: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; }
-        .btn-red { background: #ff0000; color: white; border: none; padding: 12px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; }
-        #status { margin-top: 20px; font-size: 0.85rem; border-top: 1px solid #00ff41; padding-top: 10px; min-height: 60px; line-height: 1.4; }
-    </style>
-</head>
-<body>
-    <div class="terminal">
-        <h1>🌌 SISTEMA HYDRA-MORENA ACTIVADO</h1>
-        <p style="text-align: center; font-size: 0.8rem;">ID: yefris19baseeth.base.eth</p>
-        <hr style="border: 0.5px solid #00ff41;">
+<script>
+    // Sistema de Escaneo - CosmicGemLogistic
+    function escanearRuta() {
+        const status = document.getElementById("status");
+        status.innerHTML = ">>>> ESCANEANDO RUTA SOBERANA...";
         
-        <button class="btn-green" onclick="conectar()">VINCULAR PODER</button>
-        <button class="btn-red" onclick="escanearRuta()">ACTIVAR ESCANEO SINIESTRO</button>
+        setTimeout(() => {
+            const ganancia = (Math.random() * 100).toFixed(2);
+            status.innerHTML = ">>>> RUTA VALIDADA - GANANCIA ESTIMADA: " + ganancia + " ETH";
+            console.log("Estado: OPERATIVO - Operador: carlin-moker");
+        }, 2500);
+    }
 
-        <div id="status">>>>> ESPERANDO ÓRDENES DEL MEN...</div>
-    </div>
-
-    <script>
-        async function conectar() {
-            const status = document.getElementById('status');
-            if (window.ethereum) {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    status.innerHTML = ">>>> PODER VINCULADO CON ÉXITO.<br>>>> BILLETERA: " + accounts[0].substring(0,15) + "...";
-                } catch (e) {
-                    status.innerHTML = ">>>> ERROR: CONEXIÓN RECHAZADA.";
-                }
-            } else {
-                status.innerHTML = ">>>> ERROR: NO SE DETECTÓ BILLETERA WEB3.";
-            }
+    // Lógica de Conexión
+    async function conectarSoberano() {
+        const status = document.getElementById("status");
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            status.innerHTML = ">>>> CONECTADO: " + accounts[0];
+        } catch(e) {
+            status.innerHTML = ">>>> ERROR DE CONEXIÓN: " + e.message;
         }
-
-        function escanearRuta() {
-            const status = document.getElementById('status');
-            status.innerHTML = ">>>> RASTREANDO 34 MORENAS SOBRE LA CARPETA...";
-            setTimeout(() => {
-                const ganancia = (Math.random() * 0.08).toFixed(4);
-                status.innerHTML = ">>>> ¡OPORTUNIDAD DETECTADA! 🚀<br>>>> DIFERENCIAL: +" + ganancia + " ETH<br>>>> LISTO PARA EJECUCIÓN MEGATÓNICA.";
-            }, 2500);
-        }
-    </script>
-</body>
-</html>
-
+    }
+</script>
