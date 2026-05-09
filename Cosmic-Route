@@ -1,24 +1,29 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: PROPIEDAD_PROHIBIDA
+// Cosmicjuan.blockchain - Núcleo Técnico y Analítico
+// Ruta 62: Intercambio Criptofísicomatemático y Blindaje de Legado
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
-/**
- * @title CosmicRoute_Gasless
- * @dev Tecnología de intercambio sin gas para Red 62
+}
+ * @title CosmicRouteQuantumAlpha
+ * @dev Tecnología Gasless (EIP-712) unificada con Vault de Certificación.
+ * Ejecución autónoma para protección del linaje y fluidez de activos.
  */
-contract CosmicRoute is EIP712 {
+contract CosmicRouteQuantumAlpha is EIP712 {
     using ECDSA for bytes32;
 
-    address public owner;
+    address public immutable OperadorAlpha;
+    uint256 private constant FACTOR_R62 = 0x62;
     mapping(uint256 => bool) public usedNonces;
 
-    event CosmicSwapExecuted(address indexed user, uint256 amountIn, uint256 nonce);
-
-    constructor() EIP712("CosmicRoute", "1") {
-        owner = msg.sender;
+    struct Certificado {
+        string idLinaje;
+        string hashDocumento;
+        uint256 fechaCreacion;
+        bool activo;
     }
 
     struct SwapRequest {
@@ -31,12 +36,30 @@ contract CosmicRoute is EIP712 {
         uint256 deadline;
     }
 
+    mapping(bytes32 => Certificado) public vault;
+
+    event CosmicSwapExecuted(address indexed user, uint256 amountIn, uint256 nonce);
+    event CertificadoGenerado(bytes32 indexed idCripto, string idLinaje);
+
+    modifier soloAlpha() {
+        require(msg.sender == OperadorAlpha, "Bloqueo Absoluto: Solo el Men");
+        _;
+    }
+
+    constructor() EIP712("CosmicRoute", "1") {
+        OperadorAlpha = msg.sender;
+    }
+
+    /**
+     * @dev Ejecución Gasless: El usuario firma, el ecosistema procesa.
+     * Lógica neurobiológica: fluidez sin fricción.
+     */
     function executeCosmicSwap(
         SwapRequest calldata req,
         bytes calldata signature
     ) external {
-        require(block.timestamp <= req.deadline, "Expired");
-        require(!usedNonces[req.nonce], "Nonce already used");
+        require(block.timestamp <= req.deadline, "Frecuencia expirada");
+        require(!usedNonces[req.nonce], "Nonce en uso");
 
         bytes32 structHash = _hashTypedDataV4(keccak256(abi.encode(
             keccak256("SwapRequest(address user,address tokenIn,address tokenOut,uint256 amountIn,uint256 minAmountOut,uint256 nonce,uint256 deadline)"),
@@ -50,21 +73,48 @@ contract CosmicRoute is EIP712 {
         )));
 
         address signer = structHash.recover(signature);
-        require(signer == req.user, "Invalid signature");
+        require(signer == req.user, "Firma invalida: No coincide el origen");
 
         usedNonces[req.nonce] = true;
 
-        // Liquidity execution
+        // Ejecución de Liquidez Constructiva
         IERC20(req.tokenIn).transferFrom(req.user, address(this), req.amountIn);
-        
-        require(IERC20(req.tokenOut).balanceOf(address(this)) >= req.minAmountOut, "Insufficient liquidity");
+        require(IERC20(req.tokenOut).balanceOf(address(this)) >= req.minAmountOut, "Liquidez insuficiente");
         IERC20(req.tokenOut).transfer(req.user, req.minAmountOut);
 
         emit CosmicSwapExecuted(req.user, req.amountIn, req.nonce);
     }
 
-    function withdraw(address token, uint256 amount) external {
-        require(msg.sender == owner, "Unauthorized");
-        IERC20(token).transfer(owner, amount);
+    /**
+     * @notice Blindaje de activos: Generación de certificado metacuántico.
+     */
+    function generarCertificado(string memory _idLinaje, string memory _hashDoc) external soloAlpha {
+        bytes32 idCripto = keccak256(abi.encodePacked(
+            _idLinaje, 
+            _hashDoc, 
+            block.timestamp,
+            FACTOR_R62,
+            block.prevrandao
+        ));
+
+        vault[idCripto] = Certificado({
+            idLinaje: _idLinaje,
+            hashDocumento: _hashDoc,
+            fechaCreacion: block.timestamp,
+            activo: true
+        });
+
+        emit CertificadoGenerado(idCripto, _idLinaje);
+    }
+
+    /**
+     * @dev Retiro de liquidez para consolidación del ecosistema.
+     */
+    function withdraw(address token, uint256 amount) external soloAlpha {
+        IERC20(token).transfer(OperadorAlpha, amount);
+    }
+
+    function verificarLegado(bytes32 _id) external view returns (bool) {
+        return vault[_id].activo;
     }
 }
