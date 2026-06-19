@@ -1,22 +1,20 @@
 // SPDX-License-Identifier: PROPIEDAD_PROHIBIDA
 // Cosmicjuan.blockchain - Núcleo Técnico y Analítico
-// Protección Divina - Humildad - Legado - Red 62
+// Protección Divina - Humildad - Legado - Red 62 - MODO PRIVADO
 pragma solidity ^0.8.20;
 
-}
- * @title HydraCoreQuantumAlpha
- * @dev Fusión de Motor "34 Morenas" y Vault de Activos.
- * Arquitectura Metacuántica, Fisicomatemática y Neurobiológica Cósmica.
- */
 contract HydraCoreQuantumAlpha {
     address public immutable OperadorAlpha;
-    uint256 private constant ENTROPIA_CUANTICA = 0x62; // Factor Ruta-62
-    uint256 public cosmicPulse; // Frecuencia de sincronización neurobiológica
+    uint256 private constant ENTROPIA_CUANTICA = 0x62; 
+    
+    // Pulso ahora basado en el estado interno (contador de ejecución)
+    uint256 public cosmicPulse; 
+    uint256 private nonce; 
 
     struct Certificado {
         string idLinaje;
         string hashDocumento;
-        uint256 fechaCreacion;
+        uint256 fecha;
         uint256 potenciaCriptografica;
         bool activo;
     }
@@ -33,35 +31,27 @@ contract HydraCoreQuantumAlpha {
 
     constructor() {
         OperadorAlpha = msg.sender;
-        cosmicPulse = block.timestamp;
+        cosmicPulse = ENTROPIA_CUANTICA; // Inicialización soberana
     }
 
-    /**
-     * @dev Ejecuta fragmentación con entrelazamiento logístico (Lógica 34 Morenas).
-     */
     function executeStealthSwap(uint256 cargaTotal) external soloElMen {
         require(cargaTotal >= 34, "Masa critica insuficiente");
-
-        // Lógica Fisicomatemática: Fragmentación en 34 ejes de contacto
-        uint256 porRueda = cargaTotal / 34;
         
-        // Actualización Neurobiológica: El pulso evoluciona con cada movimiento
-        cosmicPulse = uint256(keccak256(abi.encodePacked(block.prevrandao, cosmicPulse, ENTROPIA_CUANTICA)));
+        // Evolución interna del pulso sin depender de bloques externos
+        nonce++;
+        cosmicPulse = uint256(keccak256(abi.encodePacked(cosmicPulse, nonce, ENTROPIA_CUANTICA)));
 
         emit StealthSwapEjecutado(cargaTotal, cosmicPulse);
     }
 
-    /**
-     * @notice Genera un certificado de blindaje con precisión matemática.
-     */
     function generarCertificado(string memory _idLinaje, string memory _hashDocumento) external soloElMen {
-        // Razonamiento lógico-matemático para unicidad absoluta
-        uint256 potencia = uint256(keccak256(abi.encodePacked(block.prevrandao, cosmicPulse)));
+        nonce++;
+        uint256 potencia = uint256(keccak256(abi.encodePacked(cosmicPulse, nonce, _idLinaje)));
         
         bytes32 idCriptografico = keccak256(abi.encodePacked(
             _idLinaje, 
             _hashDocumento, 
-            block.timestamp,
+            nonce,
             ENTROPIA_CUANTICA,
             potencia
         ));
@@ -69,14 +59,12 @@ contract HydraCoreQuantumAlpha {
         vault[idCriptografico] = Certificado({
             idLinaje: _idLinaje,
             hashDocumento: _hashDocumento,
-            fechaCreacion: block.timestamp,
+            fecha: nonce, // Registro de secuencia interna
             potenciaCriptografica: potencia,
             activo: true
         });
 
-        // El pulso se sincroniza con el Vault
         cosmicPulse = potencia;
-
         emit CertificadoGenerado(idCriptografico, _idLinaje, potencia);
     }
 
